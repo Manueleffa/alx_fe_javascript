@@ -1,4 +1,4 @@
-const quoteArr = [
+let quoteArr = [
   {
     text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
     category: "Motivation",
@@ -24,6 +24,8 @@ const form = document.createElement("form");
 const firstInput = document.createElement("input");
 const secondInput = document.createElement("input");
 const formBtn = document.createElement("button");
+const itemFromLocalStorage = localStorage.getItem("Quotes");
+const exportBtn = document.createElement('button');
 
 function showRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quoteArr.length);
@@ -71,11 +73,60 @@ function addQuote(e) {
     }
   }
 
+  saveQuotes();
 }
 
+function saveQuotes() {
+  localStorage.setItem("Quotes", JSON.stringify(quoteArr));
+}
 
+function initializeQuotes() {
+  if (itemFromLocalStorage !== null && itemFromLocalStorage !== '') {
+    quoteArr = JSON.parse(itemFromLocalStorage);
+  }
+}
+
+function createJsonBtns(){
+    fileDivs = document.createElement('div');
+    fileDivs.innerHTML = `<input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />`;
+    div.appendChild(fileDivs);
+    exportBtn.innerText = 'Export Quotes';
+    div.appendChild(exportBtn);
+
+}
+
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(event) {
+    const importedQuotes = JSON.parse(event.target.result);
+    quoteArr.push(...importedQuotes);
+    saveQuotes();
+    alert('Quotes imported successfully!');
+  };
+  fileReader.readAsText(event.target.files[0]);
+}
+
+function exportQuotes(){
+    const exporData = JSON.stringify(quoteArr);
+
+    const blob = new Blob([exporData], {type: "application/json"}); 
+    const url = URL.createObjectURL(blob)
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function domContentLoad() {
+    initializeQuotes()
+    createAddQuoteForm();
+    createJsonBtns()
+}
 
 // Event Litsnener
 newQuoteBtn.addEventListener("click", showRandomQuote);
-document.addEventListener("DOMContentLoaded", createAddQuoteForm);
+document.addEventListener("DOMContentLoaded", domContentLoad);
 formBtn.addEventListener("click", addQuote);
+exportBtn.addEventListener("click", exportQuotes);
