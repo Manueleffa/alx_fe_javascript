@@ -25,7 +25,8 @@ const firstInput = document.createElement("input");
 const secondInput = document.createElement("input");
 const formBtn = document.createElement("button");
 const itemFromLocalStorage = localStorage.getItem("Quotes");
-const exportBtn = document.createElement('button');
+const exportBtn = document.querySelector('#exportBtn');
+const importBtn = document.querySelector('#importFile');
 
 function showRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quoteArr.length);
@@ -86,14 +87,7 @@ function initializeQuotes() {
   }
 }
 
-function createJsonBtns(){
-    fileDivs = document.createElement('div');
-    fileDivs.innerHTML = `<input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />`;
-    div.appendChild(fileDivs);
-    exportBtn.innerText = 'Export Quotes';
-    div.appendChild(exportBtn);
 
-}
 
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
@@ -122,7 +116,6 @@ function exportQuotes(){
 function domContentLoad() {
     initializeQuotes()
     createAddQuoteForm();
-    createJsonBtns()
 }
 
 // Event Litsnener
@@ -130,3 +123,4 @@ newQuoteBtn.addEventListener("click", showRandomQuote);
 document.addEventListener("DOMContentLoaded", domContentLoad);
 formBtn.addEventListener("click", addQuote);
 exportBtn.addEventListener("click", exportQuotes);
+importBtn.addEventListener("onchange", importFromJsonFile)
