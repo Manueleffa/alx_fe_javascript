@@ -114,22 +114,18 @@ function exportQuotes() {
 }
 
 function populateCategories() {
-  catArr = [];
-
   while (categoryDropdown.options.length > 1) {
     categoryDropdown.remove(1);
   }
 
-  quoteArr.forEach((item) => {
-    catArr.push(item.category);
-  });
+  const catArr = quoteArr.map((item) => item.category);
 
   const uniqueCategories = [...new Set(catArr)];
+
   uniqueCategories.forEach((cat) => {
     const option = document.createElement("option");
     option.value = cat;
     option.textContent = cat;
-
     categoryDropdown.appendChild(option);
   });
 
@@ -140,12 +136,12 @@ function populateCategories() {
 }
 
 function filterQuotes() {
-  const selectedCategory = categoryDropdown.value.toLowerCase();
+  const selectedCategory = categoryDropdown.value;
   if (selectedCategory !== "all") {
     localStorage.setItem("savedCategory", selectedCategory);
 
     const setCat = quoteArr.filter((item) => {
-      return item.category.toLowerCase() === selectedCategory;
+      return item.category === selectedCategory;
     });
 
     const randomIndex = Math.floor(Math.random() * setCat.length);
@@ -161,7 +157,10 @@ function domContentLoad() {
   initializeQuotes();
   createAddQuoteForm();
   populateCategories();
-  filterQuotes();
+
+  setTimeout(() => {
+    filterQuotes();
+  }, 0);
 }
 
 // Event Litsnener
