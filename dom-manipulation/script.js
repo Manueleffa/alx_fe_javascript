@@ -206,9 +206,9 @@ async function syncQuotes() {
     populateCategories();
     filterQuotes();
 
-    notifyUser("Quotes synced with server.");
+    notifyUser("Quotes synced with server!");
   } catch (error) {
-    notifyUser("Failed to sync with server.");
+    notifyUser("Failed to sync with server!");
   }
 }
 
