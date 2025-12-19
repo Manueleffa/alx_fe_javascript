@@ -70,6 +70,11 @@ function addQuote(e) {
         category: secondInput.value,
       });
 
+      postQuoteToServer({
+        text: firstInput.value,
+        category: secondInput.value,
+      });
+
       firstInput.value = "";
       secondInput.value = "";
     }
@@ -172,6 +177,23 @@ async function fetchQuotesFromServer() {
     text: post.title,
     category: post.body,
   }));
+}
+
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quote),
+    });
+
+    const result = await response.json();
+    console.log("Posted to server:", result);
+  } catch (error) {
+    console.error("Failed to post quote:", error);
+  }
 }
 
 async function syncQuotes() {
