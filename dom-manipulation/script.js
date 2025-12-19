@@ -153,6 +153,43 @@ function filterQuotes() {
   }
 }
 
+function notifyUser(message) {
+  const note = document.getElementById("notification");
+  note.textContent = message;
+  note.style.display = "block";
+
+  setTimeout(() => {
+    note.style.display = "none";
+  }, 4000);
+}
+
+async function fetchQuotesFromServer() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const data = await response.json();
+
+  return data.slice(0, 10).map((post) => ({
+    id: post.id,
+    text: post.title,
+    category: post.body,
+  }));
+}
+
+async function syncQuotes() {
+  try {
+    const serverQuotes = await fetchQuotesFromServer();
+
+    quoteArr = serverQuotes;
+
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+
+    notifyUser("Quotes synced with server.");
+  } catch (error) {
+    notifyUser("Failed to sync with server.");
+  }
+}
+
 function domContentLoad() {
   initializeQuotes();
   createAddQuoteForm();
@@ -161,9 +198,11 @@ function domContentLoad() {
   setTimeout(() => {
     filterQuotes();
   }, 0);
+
+  setInterval(syncQuotes, 30000);
 }
 
-// Event Litsnener
+// Event Listeners
 newQuoteBtn.addEventListener("click", showRandomQuote);
 document.addEventListener("DOMContentLoaded", domContentLoad);
 formBtn.addEventListener("click", addQuote);
